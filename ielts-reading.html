@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Reading Practice – Polar Bears</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --ink-muted: #5a5a54;
+    --ink-faint: #9a9a90;
+    --paper: #faf8f3;
+    --paper-warm: #f2efe6;
+    --paper-rule: #e4e0d4;
+    --accent: #2a5c8a;
+    --accent-light: #e8f0f8;
+    --correct: #2d6a4f;
+    --correct-bg: #e8f5ee;
+    --wrong: #8b2020;
+    --wrong-bg: #faebeb;
+    --highlight: #f5c842;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-brand {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+  }
+  .header-brand span { color: var(--highlight); }
+  .timer {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    background: rgba(255,255,255,0.1);
+    padding: 0.35rem 0.85rem;
+    border-radius: 2rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer.urgent { color: #ff7a7a; }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1px 420px;
+    gap: 0;
+    min-height: calc(100vh - 64px);
+  }
+
+  .divider {
+    background: var(--paper-rule);
+    margin: 0 2rem;
+  }
+
+  /* ── Reading Passage ── */
+  .passage-pane {
+    padding-right: 2rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    position: sticky;
+    top: 72px;
+    align-self: start;
+  }
+
+  .passage-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.75rem;
+  }
+
+  .passage-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.5rem;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid var(--paper-rule);
+  }
+
+  .passage-body {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.9rem;
+    line-height: 1.85;
+    color: var(--ink);
+  }
+
+  .passage-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+  }
+
+  /* ── Questions Pane ── */
+  .questions-pane {
+    padding-left: 2rem;
+  }
+
+  .section-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid var(--paper-rule);
+  }
+
+  .section-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 2px;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .section-instructions {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    background: var(--paper-warm);
+    border-left: 3px solid var(--accent);
+    padding: 0.6rem 0.8rem;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ── True/False/NG Questions ── */
+  .tfng-question {
+    margin-bottom: 1.25rem;
+  }
+
+  .q-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+  }
+
+  .q-number {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--accent);
+    min-width: 1.4rem;
+    padding-top: 0.05rem;
+    font-family: 'Libre Baskerville', serif;
+  }
+
+  .q-text {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .tfng-buttons {
+    display: flex;
+    gap: 0.4rem;
+    padding-left: 2rem;
+  }
+
+  .btn-choice {
+    border: 1.5px solid var(--paper-rule);
+    background: white;
+    color: var(--ink-muted);
+    padding: 0.3rem 0.7rem;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-choice:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn-choice.selected { border-color: var(--accent); background: var(--accent); color: white; }
+
+  /* ── Fill-in questions ── */
+  .fill-section {
+    margin-top: 2rem;
+  }
+
+  .fill-question {
+    margin-bottom: 1rem;
+  }
+
+  .fill-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .fill-input {
+    border: none;
+    border-bottom: 2px solid var(--paper-rule);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--ink);
+    padding: 0.2rem 0.4rem;
+    min-width: 130px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .fill-input:focus { border-color: var(--accent); }
+  .fill-input::placeholder { color: var(--ink-faint); font-size: 0.78rem; }
+
+  /* ── Submit & Status ── */
+  .submit-zone {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1.5px solid var(--paper-rule);
+  }
+
+  .btn-submit {
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 0.9rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: var(--accent); }
+  .btn-submit:disabled { background: var(--ink-faint); cursor: not-allowed; }
+
+  .status-msg {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    text-align: center;
+    min-height: 1.2em;
+    color: var(--ink-muted);
+  }
+  .status-msg.ok { color: var(--correct); font-weight: 500; }
+  .status-msg.err { color: var(--wrong); }
+
+  /* ── Progress dots ── */
+  .progress-bar {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .prog-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--paper-rule);
+    transition: background 0.2s;
+  }
+  .prog-dot.answered { background: var(--accent); }
+
+  /* ── Scrollbar ── */
+  .passage-pane::-webkit-scrollbar { width: 4px; }
+  .passage-pane::-webkit-scrollbar-track { background: transparent; }
+  .passage-pane::-webkit-scrollbar-thumb { background: var(--paper-rule); border-radius: 2px; }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .container { grid-template-columns: 1fr; }
+    .divider { display: none; }
+    .passage-pane { position: static; max-height: none; padding-right: 0; border-bottom: 1.5px solid var(--paper-rule); padding-bottom: 2rem; margin-bottom: 2rem; }
+    .questions-pane { padding-left: 0; }
+  }
+
+  /* ── Name modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,24,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-box {
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 2rem 2.5rem;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+  }
+  .modal-box h2 {
+    font-family: 'Libre Baskerville', serif;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+  }
+  .modal-box p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 1.25rem; }
+  .modal-input {
+    width: 100%; border: 1.5px solid var(--paper-rule);
+    border-radius: 3px; padding: 0.65rem 0.85rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    color: var(--ink); background: white; outline: none;
+    margin-bottom: 1rem;
+    transition: border-color 0.15s;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-btn {
+    width: 100%; background: var(--ink); color: var(--paper);
+    border: none; padding: 0.75rem; border-radius: 3px;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    cursor: pointer; font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .modal-btn:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- Name Modal -->
+<div class="modal-overlay" id="nameModal">
+  <div class="modal-box">
+    <h2>Welcome</h2>
+    <p>Enter your name to begin. Your answers will be tracked automatically.</p>
+    <input class="modal-input" type="text" id="studentName" placeholder="Your full name" autocomplete="name">
+    <button class="modal-btn" onclick="startTest()">Begin Test</button>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-brand">IELTS <span>Reading</span> Practice</div>
+  <div class="timer" id="timerDisplay">20:00</div>
+</header>
+
+<!-- Main Layout -->
+<div class="container">
+
+  <!-- Passage -->
+  <div class="passage-pane">
+    <div class="passage-label">Reading Passage 1</div>
+    <h1 class="passage-title">Why we need to protect polar bears</h1>
+    <div class="passage-body">
+      <p>Polar bears are being increasingly threatened by the effects of climate change, but their disappearance could have far-reaching consequences. They are uniquely adapted to the extreme conditions of the Arctic Circle, where temperatures can reach -40°C. One reason for this is that they have up to 11 centimetres of fat underneath their skin. Humans with comparative levels of adipose tissue would be considered obese and would be likely to suffer from diabetes and heart disease. Yet the polar bear experiences no such consequences.</p>
+      <p>A 2014 study by Shi Ping Liu and colleagues sheds light on this mystery. They compared the genetic structure of polar bears with that of their closest relatives from a warmer climate, the brown bears. This allowed them to determine the genes that have allowed polar bears to survive in one of the toughest environments on Earth. Liu and his colleagues found the polar bears had a gene known as APoB, which reduces levels of low-density lipoproteins (LDLs) — a form of 'bad' cholesterol. In humans, mutations of this gene are associated with increased risk of heart disease. Polar bears may therefore be an important study model to understand heart disease in humans.</p>
+      <p>The genome of the polar bear may also provide the solution for another condition, one that particularly affects our older generation: osteoporosis. This is a disease where bones show reduced density, usually caused by insufficient exercise, reduced calcium intake or food starvation. Bone tissue is constantly being remodelled, meaning that bone is added or removed, depending on nutrient availability and the stress that the bone is under.</p>
+      <p>Female polar bears, however, undergo extreme conditions during every pregnancy. Once autumn comes around, these females will dig maternity dens in the snow and will remain there throughout the winter, both before and after the birth of their cubs. This process results in about six months of fasting, where the female bears have to keep themselves and their cubs alive, depleting their own calcium and calorie reserves. Despite this, their bones remain strong and dense.</p>
+      <p>Physiologists Alanda Lennox and Allen Goodship found an explanation for this paradox in 2008. They discovered that pregnant bears were able to increase the density of their bones before they started to build their dens. In addition, six months later, when they finally emerged from the den with their cubs, there was no evidence of significant loss of bone density. Hibernating brown bears do not have this capacity and must therefore resort to major bone reformation in the following spring. If the mechanism of bone remodelling in polar bears can be understood, many bedridden humans, and even astronauts, could potentially benefit.</p>
+      <p>The medical benefits of the polar bear for humanity certainly have their importance in our conservation efforts, but these should not be the only factors taken into consideration. We tend to want to protect animals we think are intelligent and possess emotions, such as elephants and primates. Bears, on the other hand, seem to be perceived as stupid and in many cases violent. And yet anecdotal evidence from the field challenges those assumptions, suggesting for example that polar bears have good problem-solving abilities.</p>
+      <p>A male bear called GoGo in Tennoji Zoo, Osaka, has even been observed making use of a tool to manipulate his environment. The bear used a tree branch on multiple occasions to dislodge a piece of meat hung out of his reach. Problem-solving ability has also been witnessed in wild polar bears, although not as obviously as with GoGo. A calculated move by a male bear involved running and jumping onto barrels in an attempt to get to a photographer standing on a platform four metres high.</p>
+      <p>In other studies, such as one by Alison Ames in 2008, polar bears showed deliberate and focussed manipulation. For example, Ames observed bears putting objects in piles and then knocking them over in what appeared to be a game. The study demonstrates that bears are capable of agile and thought-out behaviours. These examples suggest bears have greater creativity and problem-solving abilities than previously thought.</p>
+      <p>As for emotions, while the evidence is once again anecdotal, many bears have been seen to hit out at ice and snow — seemingly out of frustration — when they have just missed out on a kill. Moreover, polar bears can form unusual relationships with other species, including playing with the dogs used to pull sleds in the Arctic. Remarkably, one hand-raised polar bear called Agee has formed a close relationship with her owner Mark Dumas to the point where they even swim together. This is even more astonishing since polar bears are known to actively hunt humans in the wild.</p>
+      <p>If climate change were to lead to their extinction, this would mean not only the loss of potential breakthroughs in human medicine, but more importantly, the disappearance of an intelligent, majestic animal.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Questions -->
+  <div class="questions-pane">
+
+    <!-- Progress -->
+    <div class="progress-bar" id="progressBar">
+      <!-- dots injected by JS -->
+    </div>
+
+    <!-- Section 1: T/F/NG -->
+    <div class="section-header">
+      <div class="section-tag">Questions 1–7</div>
+      <div class="section-title">True / False / Not Given</div>
+      <div class="section-instructions">
+        Do the following statements agree with the information given in Reading Passage 1?<br>
+        Write <strong>TRUE</strong> if the statement agrees · <strong>FALSE</strong> if it contradicts · <strong>NOT GIVEN</strong> if there is no information on this.
+      </div>
+    </div>
+
+    <div id="tfngQuestions">
+      <!-- injected by JS -->
+    </div>
+
+    <!-- Section 2: Fill-in -->
+    <div class="fill-section">
+      <div class="section-header">
+        <div class="section-tag">Questions 8–13</div>
+        <div class="section-title">Note Completion</div>
+        <div class="section-instructions">
+          Complete the notes using <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.
+        </div>
+      </div>
+
+      <div style="background: var(--paper-warm); border-radius: 4px; padding: 1.25rem; font-size: 0.85rem; line-height: 1.8;">
+
+        <strong style="font-family: 'Libre Baskerville', serif;">Reasons why polar bears should be protected</strong>
+        <div style="margin-top: 0.75rem; color: var(--ink-muted); font-size: 0.78rem; margin-bottom: 1rem;">People think of bears as unintelligent and</div>
+
+        <div class="fill-question">
+          <div class="fill-row">
+            <span class="q-number">8.</span>
+            <input class="fill-input" data-q="8" type="text" placeholder="your answer" maxlength="40">
+            <span style="font-size:0.8rem; color:var(--ink-muted)">However, this may not be correct. For example:</span>
+          </div>
+        </div>
+
+        <div style="padding-left: 1rem; border-left: 2px solid var(--paper-rule); margin: 0.5rem 0 0.75rem;">
+          <div class="fill-question">
+            <div class="fill-row" style="flex-wrap: wrap;">
+              <span class="q-number">9.</span>
+              <span style="font-size:0.82rem;">In Tennoji Zoo, a bear used a branch as a</span>
+              <input class="fill-input" data-q="9" type="text" placeholder="your answer" maxlength="40">
+            </div>
+          </div>
+          <div class="fill-question" style="margin-top: 0.6rem;">
+            <div class="fill-row" style="flex-wrap: wrap;">
+              <span style="font-size:0.82rem; color:var(--ink-muted)">This allowed him to knock down some</span>
+              <input class="fill-input" data-q="10" type="text" placeholder="your answer" maxlength="40">
+              <span class="q-number" style="margin-left:0;">10.</span>
+            </div>
+          </div>
+          <div class="fill-question" style="margin-top: 0.6rem;">
+            <div class="fill-row" style="flex-wrap: wrap;">
+              <span style="font-size:0.82rem; color:var(--ink-muted)">A wild polar bear worked out a method of reaching a platform where a</span>
+              <input class="fill-input" data-q="11" type="text" placeholder="your answer" maxlength="40">
+              <span class="q-number">11.</span>
+              <span style="font-size:0.82rem; color:var(--ink-muted)">was located.</span>
+            </div>
+          </div>
+          <div class="fill-question" style="margin-top: 0.6rem;">
+            <div class="fill-row" style="flex-wrap: wrap;">
+              <span style="font-size:0.82rem; color:var(--ink-muted)">Polar bears displayed behaviour such as conscious manipulation of objects and activity similar to a</span>
+              <input class="fill-input" data-q="12" type="text" placeholder="your answer" maxlength="40">
+              <span class="q-number">12.</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 0.75rem; color: var(--ink-muted); font-size: 0.78rem; margin-bottom: 0.5rem;">Bears may also display emotions. For example:</div>
+        <div class="fill-question">
+          <div class="fill-row" style="flex-wrap: wrap;">
+            <span style="font-size:0.82rem; color:var(--ink-muted)">They may make movements suggesting</span>
+            <input class="fill-input" data-q="13" type="text" placeholder="your answer" maxlength="40">
+            <span class="q-number">13.</span>
+            <span style="font-size:0.82rem; color:var(--ink-muted)">when hunting.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-zone">
+      <button class="btn-submit" id="submitBtn" onclick="submitAnswers()" disabled>Submit Answers</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────
+// TEACHER: Replace this URL with your Google Apps Script Web App URL
+// See setup instructions below.
+const SHEET_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+
+const TFNG_QUESTIONS = [
+  { n: 1, text: "Polar bears suffer from various health problems due to the build-up of fat under their skin." },
+  { n: 2, text: "The study done by Liu and his colleagues compared different groups of polar bears." },
+  { n: 3, text: "Liu and colleagues were the first researchers to compare polar bears and brown bears genetically." },
+  { n: 4, text: "Polar bears are able to control their levels of 'bad' cholesterol by genetic means." },
+  { n: 5, text: "Female polar bears are able to survive for about six months without food." },
+  { n: 6, text: "It was found that the bones of female polar bears were very weak when they came out of their dens in spring." },
+  { n: 7, text: "The polar bear's mechanism for increasing bone density could also be used by people one day." }
+];
+
+let studentName = "";
+let answers = {};  // { "1": "TRUE", "2": "FALSE", ... "8": "word", ... }
+let startTime = null;
+let timerInterval = null;
+const TIME_LIMIT = 20 * 60; // 20 minutes
+
+// ── Build T/F/NG questions ───────────────────────────────────────
+function buildTFNG() {
+  const container = document.getElementById("tfngQuestions");
+  TFNG_QUESTIONS.forEach(q => {
+    const div = document.createElement("div");
+    div.className = "tfng-question";
+    div.innerHTML = `
+      <div class="q-row">
+        <span class="q-number">${q.n}.</span>
+        <span class="q-text">${q.text}</span>
+      </div>
+      <div class="tfng-buttons">
+        <button class="btn-choice" data-q="${q.n}" data-val="TRUE" onclick="selectTFNG(this)">TRUE</button>
+        <button class="btn-choice" data-q="${q.n}" data-val="FALSE" onclick="selectTFNG(this)">FALSE</button>
+        <button class="btn-choice" data-q="${q.n}" data-val="NOT GIVEN" onclick="selectTFNG(this)">NOT GIVEN</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ── Build progress dots ──────────────────────────────────────────
+function buildDots() {
+  const bar = document.getElementById("progressBar");
+  for (let i = 1; i <= 13; i++) {
+    const dot = document.createElement("div");
+    dot.className = "prog-dot";
+    dot.id = `dot-${i}`;
+    bar.appendChild(dot);
+  }
+}
+
+function updateDot(q) {
+  const dot = document.getElementById(`dot-${q}`);
+  if (dot && answers[q] !== undefined && answers[q] !== "") {
+    dot.classList.add("answered");
+  }
+  checkAllAnswered();
+}
+
+function checkAllAnswered() {
+  const allDone = [1,2,3,4,5,6,7,8,9,10,11,12,13].every(
+    q => answers[q] !== undefined && answers[q] !== ""
+  );
+  document.getElementById("submitBtn").disabled = !allDone;
+}
+
+// ── Interactions ─────────────────────────────────────────────────
+function selectTFNG(btn) {
+  const q = btn.dataset.q;
+  const val = btn.dataset.val;
+  // deselect siblings
+  document.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  answers[q] = val;
+  updateDot(q);
+  autoSave();
+}
+
+// Wire up fill inputs
+document.querySelectorAll(".fill-input").forEach(input => {
+  input.addEventListener("input", () => {
+    const q = input.dataset.q;
+    answers[q] = input.value.trim();
+    updateDot(q);
+    autoSave();
+  });
+});
+
+// ── Timer ────────────────────────────────────────────────────────
+function startTimer() {
+  startTime = Date.now();
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const remaining = TIME_LIMIT - elapsed;
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById("timerDisplay").textContent = "00:00";
+      submitAnswers(true);
+      return;
+    }
+    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+    const s = String(remaining % 60).padStart(2, "0");
+    const el = document.getElementById("timerDisplay");
+    el.textContent = `${m}:${s}`;
+    if (remaining <= 120) el.classList.add("urgent");
+  }, 1000);
+}
+
+// ── Start test ───────────────────────────────────────────────────
+function startTest() {
+  const input = document.getElementById("studentName");
+  const name = input.value.trim();
+  if (!name) { input.focus(); input.style.borderColor = "#cc4444"; return; }
+  studentName = name;
+  document.getElementById("nameModal").style.display = "none";
+  startTimer();
+  sendToSheet({ event: "started", name: studentName, time: new Date().toISOString() });
+}
+
+// ── Auto-save (every answer change) ─────────────────────────────
+let saveTimeout = null;
+function autoSave() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+    sendToSheet({
+      event: "progress",
+      name: studentName,
+      time: new Date().toISOString(),
+      elapsed_seconds: elapsed,
+      answers: JSON.stringify(answers)
+    });
+  }, 1200);
+}
+
+// ── Submit ───────────────────────────────────────────────────────
+function submitAnswers(autoSubmit = false) {
+  clearInterval(timerInterval);
+  const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+  const m = Math.floor(elapsed / 60);
+  const s = elapsed % 60;
+
+  const btn = document.getElementById("submitBtn");
+  const msg = document.getElementById("statusMsg");
+  btn.disabled = true;
+  btn.textContent = "Submitting…";
+  msg.textContent = "";
+  msg.className = "status-msg";
+
+  sendToSheet({
+    event: autoSubmit ? "auto_submitted" : "submitted",
+    name: studentName,
+    time: new Date().toISOString(),
+    elapsed_seconds: elapsed,
+    time_taken: `${m}m ${s}s`,
+    answers: JSON.stringify(answers),
+    q1: answers[1]||"", q2: answers[2]||"", q3: answers[3]||"",
+    q4: answers[4]||"", q5: answers[5]||"", q6: answers[6]||"",
+    q7: answers[7]||"", q8: answers[8]||"", q9: answers[9]||"",
+    q10: answers[10]||"", q11: answers[11]||"", q12: answers[12]||"",
+    q13: answers[13]||""
+  }).then(ok => {
+    if (ok) {
+      btn.textContent = "Submitted ✓";
+      msg.textContent = `Answers recorded. Time taken: ${m}m ${s}s.`;
+      msg.className = "status-msg ok";
+    } else {
+      btn.disabled = false;
+      btn.textContent = "Submit Answers";
+      msg.textContent = "Could not save. Check your connection and try again.";
+      msg.className = "status-msg err";
+    }
+  });
+}
+
+// ── Google Sheets sender ─────────────────────────────────────────
+function sendToSheet(data) {
+  if (SHEET_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
+    console.log("📋 [Demo mode — no Sheet URL set]", data);
+    return Promise.resolve(true);
+  }
+  const params = new URLSearchParams(data);
+  return fetch(`${SHEET_URL}?${params.toString()}`, { method: "GET", mode: "no-cors" })
+    .then(() => true)
+    .catch(() => false);
+}
+
+// ── Init ─────────────────────────────────────────────────────────
+buildDots();
+buildTFNG();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TEACHER SETUP INSTRUCTIONS (remove before sharing with student)
+═══════════════════════════════════════════════════════════════════
+
+STEP 1 — Create a Google Sheet
+  1. Go to sheets.google.com → New spreadsheet
+  2. Name it e.g. "IELTS Answers"
+  3. Add these headers in Row 1:
+     Timestamp | Event | Student | Time | Elapsed(s) | TimeTaken | Q1 | Q2 | Q3 | Q4 | Q5 | Q6 | Q7 | Q8 | Q9 | Q10 | Q11 | Q12 | Q13 | AllAnswers
+
+STEP 2 — Create a Google Apps Script
+  1. In the Sheet, go to Extensions → Apps Script
+  2. Paste this code (replace everything):
+
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const p = e.parameter;
+  sheet.appendRow([
+    new Date(),
+    p.event || "",
+    p.name || "",
+    p.time || "",
+    p.elapsed_seconds || "",
+    p.time_taken || "",
+    p.q1||"", p.q2||"", p.q3||"", p.q4||"", p.q5||"", p.q6||"", p.q7||"",
+    p.q8||"", p.q9||"", p.q10||"", p.q11||"", p.q12||"", p.q13||"",
+    p.answers || ""
+  ]);
+  return ContentService.createTextOutput("OK");
+}
+
+  3. Click Save (Ctrl+S)
+  4. Click Deploy → New deployment
+  5. Type: Web app
+  6. Execute as: Me
+  7. Who has access: Anyone
+  8. Click Deploy → copy the Web App URL
+
+STEP 3 — Paste the URL
+  In this HTML file, replace:
+    const SHEET_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+  with:
+    const SHEET_URL = "https://script.google.com/macros/s/YOUR_ACTUAL_ID/exec";
+
+STEP 4 — Push to GitHub Pages
+  1. Create a repo on github.com
+  2. Upload this HTML file as index.html
+  3. Go to Settings → Pages → Source: main branch
+  4. Share the https://yourusername.github.io/reponame link with your student
+
+HOW IT WORKS
+  • Student enters name → "started" row logged
+  • Every answer change auto-saves after 1.2s → "progress" row logged
+  • Final submit logs all 13 answers with time taken
+  • You watch the Google Sheet in real time — refresh to see updates,
+    or use Google Sheets' built-in auto-refresh (it updates within seconds)
+
+ANSWER KEY (for your reference)
+  1. FALSE    2. FALSE    3. NOT GIVEN    4. TRUE
+  5. TRUE     6. FALSE    7. TRUE
+  8. violent  9. tool    10. meat        11. photographer
+  12. game   13. frustration
+═══════════════════════════════════════════════════════════════════ -->
+</body>
+</html>
