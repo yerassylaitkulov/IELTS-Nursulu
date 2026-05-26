@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Reading Practice – Polar Bears</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --ink-muted: #5a5a54;
+    --ink-faint: #9a9a90;
+    --paper: #faf8f3;
+    --paper-warm: #f2efe6;
+    --paper-rule: #e4e0d4;
+    --accent: #2a5c8a;
+    --accent-light: #e8f0f8;
+    --correct: #2d6a4f;
+    --correct-bg: #e8f5ee;
+    --wrong: #8b2020;
+    --wrong-bg: #faebeb;
+    --ng-color: #7a5c1a;
+    --ng-bg: #fdf4e3;
+    --highlight: #f5c842;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 1rem;
+  }
+  .header-brand {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .header-brand span { color: var(--highlight); }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+  .nav-tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.4rem 1rem;
+    border-radius: 3px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    background: transparent;
+    color: rgba(250,248,243,0.55);
+    letter-spacing: 0.03em;
+    transition: all 0.18s;
+  }
+  .nav-tab:hover { color: var(--paper); background: rgba(255,255,255,0.08); }
+  .nav-tab.active { background: rgba(255,255,255,0.14); color: var(--paper); border-color: rgba(255,255,255,0.2); }
+
+  .timer {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    background: rgba(255,255,255,0.1);
+    padding: 0.35rem 0.85rem;
+    border-radius: 2rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .timer.urgent { color: #ff7a7a; }
+  .timer.hidden { visibility: hidden; }
+
+  /* ── Pages ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ══════════════════════════════════
+     LESSON PAGE
+  ══════════════════════════════════ */
+  .lesson-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .lesson-hero {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1.5px solid var(--paper-rule);
+  }
+  .lesson-kicker {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.5rem;
+  }
+  .lesson-heading {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.9rem;
+    line-height: 1.25;
+    margin-bottom: 0.85rem;
+  }
+  .lesson-intro {
+    font-size: 0.92rem;
+    color: var(--ink-muted);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* Definition cards */
+  .def-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 2.5rem;
+  }
+  @media(max-width: 600px) { .def-grid { grid-template-columns: 1fr; } }
+
+  .def-card {
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+    border: 1.5px solid transparent;
+  }
+  .def-card.true-card  { background: var(--correct-bg); border-color: #a8d5bc; }
+  .def-card.false-card { background: var(--wrong-bg);   border-color: #f0b8b8; }
+  .def-card.ng-card    { background: var(--ng-bg);      border-color: #f0d8a0; }
+
+  .def-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .def-card.true-card  .def-label { color: var(--correct); }
+  .def-card.false-card .def-label { color: var(--wrong); }
+  .def-card.ng-card    .def-label { color: var(--ng-color); }
+
+  .def-text {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--ink-muted);
+  }
+  .def-card.true-card  .def-text { color: #2a5a3a; }
+  .def-card.false-card .def-text { color: #6a2020; }
+  .def-card.ng-card    .def-text { color: #6a4a10; }
+
+  /* Examples */
+  .examples-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .examples-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--paper-rule);
+  }
+
+  .example-card {
+    background: white;
+    border: 1px solid var(--paper-rule);
+    border-radius: 6px;
+    margin-bottom: 1.1rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .example-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+  .example-body {
+    padding: 1.1rem 1.25rem;
+  }
+
+  .ex-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.3rem;
+  }
+
+  .ex-passage {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--paper-rule);
+  }
+
+  .ex-statement-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.75rem;
+  }
+  .ex-stmt-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-top: 0.1rem;
+    white-space: nowrap;
+  }
+  .ex-statement {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .ex-answer-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1.25rem;
+    border-top: 1px solid var(--paper-rule);
+    cursor: pointer;
+    user-select: none;
+  }
+  .ex-answer-bar.revealed { cursor: default; }
+
+  .ex-verdict {
+    display: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 3px;
+  }
+  .ex-answer-bar.revealed .ex-verdict { display: inline-block; }
+  .ex-verdict.v-true  { background: var(--correct-bg); color: var(--correct); }
+  .ex-verdict.v-false { background: var(--wrong-bg);   color: var(--wrong); }
+  .ex-verdict.v-ng    { background: var(--ng-bg);      color: var(--ng-color); }
+
+  .ex-explanation {
+    display: none;
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+  .ex-answer-bar.revealed .ex-explanation { display: block; }
+
+  .ex-reveal-hint {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .ex-answer-bar.revealed .ex-reveal-hint { display: none; }
+
+  .reveal-arrow {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--paper-rule);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 14px;
+    font-size: 9px;
+  }
+
+  /* Tip box */
+  .tip-box {
+    background: var(--accent-light);
+    border: 1px solid #c0d8ee;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .tip-box-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .tip-box ul {
+    padding-left: 1.1rem;
+    font-size: 0.83rem;
+    color: #1a3f6a;
+    line-height: 1.7;
+  }
+
+  /* CTA */
+  .lesson-cta {
+    text-align: center;
+    padding-top: 1rem;
+  }
+  .btn-start-test {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 0.9rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.2s;
+  }
+  .btn-start-test:hover { background: var(--accent); }
+  .cta-sub { font-size: 0.78rem; color: var(--ink-faint); margin-top: 0.6rem; }
+
+  /* ══════════════════════════════════
+     TEST PAGE (same as before)
+  ══════════════════════════════════ */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1px 420px;
+    gap: 0;
+    min-height: calc(100vh - 64px);
+  }
+  .divider { background: var(--paper-rule); margin: 0 2rem; }
+
+  .passage-pane {
+    padding-right: 2rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    position: sticky;
+    top: 72px;
+    align-self: start;
+  }
+  .passage-label {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.75rem;
+  }
+  .passage-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.5rem; line-height: 1.3; color: var(--ink);
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 1.5px solid var(--paper-rule);
+  }
+  .passage-body { font-family: 'Libre Baskerville', serif; font-size: 0.9rem; line-height: 1.85; color: var(--ink); }
+  .passage-body p { margin-bottom: 1.1rem; text-align: justify; }
+
+  .questions-pane { padding-left: 2rem; }
+  .section-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1.5px solid var(--paper-rule); }
+  .section-tag {
+    display: inline-block; background: var(--accent); color: white;
+    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 0.25rem 0.65rem; border-radius: 2px; margin-bottom: 0.6rem;
+  }
+  .section-title { font-family: 'Libre Baskerville', serif; font-size: 1.05rem; margin-bottom: 0.5rem; line-height: 1.4; }
+  .section-instructions {
+    font-size: 0.8rem; color: var(--ink-muted); line-height: 1.5;
+    background: var(--paper-warm); border-left: 3px solid var(--accent);
+    padding: 0.6rem 0.8rem; border-radius: 0 4px 4px 0;
+  }
+  .tfng-question { margin-bottom: 1.25rem; }
+  .q-row { display: flex; gap: 0.6rem; align-items: flex-start; margin-bottom: 0.5rem; }
+  .q-number { font-weight: 600; font-size: 0.8rem; color: var(--accent); min-width: 1.4rem; padding-top: 0.05rem; font-family: 'Libre Baskerville', serif; }
+  .q-text { font-size: 0.85rem; line-height: 1.55; color: var(--ink); flex: 1; }
+  .tfng-buttons { display: flex; gap: 0.4rem; padding-left: 2rem; }
+  .btn-choice {
+    border: 1.5px solid var(--paper-rule); background: white; color: var(--ink-muted);
+    padding: 0.3rem 0.7rem; border-radius: 3px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; cursor: pointer; transition: all 0.15s ease;
+  }
+  .btn-choice:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn-choice.selected { border-color: var(--accent); background: var(--accent); color: white; }
+
+  .fill-section { margin-top: 2rem; }
+  .fill-question { margin-bottom: 1rem; }
+  .fill-row { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+  .fill-input {
+    border: none; border-bottom: 2px solid var(--paper-rule); background: transparent;
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--ink);
+    padding: 0.2rem 0.4rem; min-width: 130px; outline: none; transition: border-color 0.15s;
+  }
+  .fill-input:focus { border-color: var(--accent); }
+  .fill-input::placeholder { color: var(--ink-faint); font-size: 0.78rem; }
+
+  .submit-zone { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1.5px solid var(--paper-rule); }
+  .btn-submit {
+    width: 100%; background: var(--ink); color: var(--paper); border: none;
+    padding: 0.9rem 1.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    font-weight: 500; letter-spacing: 0.04em; cursor: pointer; border-radius: 3px; transition: background 0.2s;
+  }
+  .btn-submit:hover { background: var(--accent); }
+  .btn-submit:disabled { background: var(--ink-faint); cursor: not-allowed; }
+  .status-msg { margin-top: 0.75rem; font-size: 0.8rem; text-align: center; min-height: 1.2em; color: var(--ink-muted); }
+  .status-msg.ok { color: var(--correct); font-weight: 500; }
+  .status-msg.err { color: var(--wrong); }
+
+  .progress-bar { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .prog-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--paper-rule); transition: background 0.2s; }
+  .prog-dot.answered { background: var(--accent); }
+
+  .passage-pane::-webkit-scrollbar { width: 4px; }
+  .passage-pane::-webkit-scrollbar-track { background: transparent; }
+  .passage-pane::-webkit-scrollbar-thumb { background: var(--paper-rule); border-radius: 2px; }
+
+  @media (max-width: 768px) {
+    .container { grid-template-columns: 1fr; }
+    .divider { display: none; }
+    .passage-pane { position: static; max-height: none; padding-right: 0; border-bottom: 1.5px solid var(--paper-rule); padding-bottom: 2rem; margin-bottom: 2rem; }
+    .questions-pane { padding-left: 0; }
+    .nav-tab { padding: 0.35rem 0.6rem; font-size: 0.72rem; }
+  }
+
+  /* ── Name modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(26,26,24,0.7);
+    display: flex; align-items: center; justify-content: center; z-index: 200;
+  }
+  .modal-box { background: var(--paper); border-radius: 6px; padding: 2rem 2.5rem; max-width: 380px; width: 90%; text-align: center; }
+  .modal-box h2 { font-family: 'Libre Baskerville', serif; margin-bottom: 0.5rem; font-size: 1.2rem; }
+  .modal-box p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 1.25rem; }
+  .modal-input {
+    width: 100%; border: 1.5px solid var(--paper-rule); border-radius: 3px;
+    padding: 0.65rem 0.85rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    color: var(--ink); background: white; outline: none; margin-bottom: 1rem; transition: border-color 0.15s;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-btn {
+    width: 100%; background: var(--ink); color: var(--paper); border: none; padding: 0.75rem;
+    border-radius: 3px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; font-size: 0.9rem; transition: background 0.2s;
+  }
+  .modal-btn:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- Name Modal (only shown when switching to test) -->
+<div class="modal-overlay" id="nameModal" style="display:none;">
+  <div class="modal-box">
+    <h2>Ready to begin?</h2>
+    <p>Enter your name to start the test. Your answers will be tracked automatically.</p>
+    <input class="modal-input" type="text" id="studentName" placeholder="Your full name" autocomplete="name">
+    <button class="modal-btn" onclick="startTest()">Begin Test</button>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-brand">IELTS <span>Reading</span></div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" id="tab-lesson" onclick="showPage('lesson')">① Learn</button>
+    <button class="nav-tab" id="tab-test" onclick="goToTest()">② Practice Test</button>
+  </nav>
+  <div class="timer hidden" id="timerDisplay">20:00</div>
+</header>
+
+<!-- ════════════════════════════════════════
+     PAGE 1: LESSON
+════════════════════════════════════════ -->
+<div class="page active" id="page-lesson">
+  <div class="lesson-wrap">
+
+    <div class="lesson-hero">
+      <div class="lesson-kicker">Before you begin</div>
+      <h1 class="lesson-heading">True / False / Not Given</h1>
+      <p class="lesson-intro">In this question type, you read a statement and decide whether the passage confirms it, contradicts it, or simply doesn't mention it. Read each example carefully, then click <em>reveal answer</em> to see the explanation.</p>
+    </div>
+
+    <!-- Definition cards -->
+    <div class="def-grid">
+      <div class="def-card true-card">
+        <div class="def-label">TRUE</div>
+        <div class="def-text">The passage clearly <strong>agrees</strong> with the statement. The information is explicitly stated or directly implied.</div>
+      </div>
+      <div class="def-card false-card">
+        <div class="def-label">FALSE</div>
+        <div class="def-text">The passage clearly <strong>contradicts</strong> the statement. The information says the opposite of what is claimed.</div>
+      </div>
+      <div class="def-card ng-card">
+        <div class="def-label">Not Given</div>
+        <div class="def-text">The passage neither confirms <strong>nor contradicts</strong> the statement. The topic may or may not be mentioned, but there is not enough information to decide.</div>
+      </div>
+    </div>
+
+    <!-- Tip box -->
+    <div class="tip-box">
+      <div class="tip-box-title">Key strategy tips</div>
+      <ul>
+        <li>Always base your answer <strong>only on the passage</strong> — never on your own knowledge or opinions.</li>
+        <li>Watch out for words like <em>all, none, always, never, only, solely</em> — they often make a TRUE statement FALSE.</li>
+        <li>If you can't find the information anywhere in the passage, it is NOT GIVEN — not FALSE.</li>
+        <li>The statements follow the order of the passage. Use this to locate information quickly.</li>
+      </ul>
+    </div>
+
+    <!-- Examples -->
+    <div class="examples-title">Worked examples</div>
+
+    <!-- Example 1: FALSE -->
+    <div class="example-card">
+      <div class="example-body">
+        <div class="ex-label">Passage</div>
+        <p class="ex-passage">"The majority of people who graduated university found it difficult to get a job."</p>
+        <div class="ex-statement-row">
+          <span class="ex-stmt-label">Statement</span>
+          <span class="ex-statement">"After finishing their tertiary education, all people had difficulties finding employment."</span>
+        </div>
+      </div>
+      <div class="ex-answer-bar" onclick="revealAnswer(this)">
+        <span class="ex-verdict v-false">FALSE</span>
+        <span class="ex-explanation">The passage says <em>the majority</em> had difficulties — not <em>all</em> people. The word "all" makes the statement a contradiction.</span>
+        <span class="ex-reveal-hint">Reveal answer <span class="reveal-arrow">▸</span></span>
+      </div>
+    </div>
+
+    <!-- Example 2: FALSE -->
+    <div class="example-card">
+      <div class="example-body">
+        <div class="ex-label">Passage</div>
+        <p class="ex-passage">"The Amazon rainforest produces about 20% of the world's oxygen."</p>
+        <div class="ex-statement-row">
+          <span class="ex-stmt-label">Statement</span>
+          <span class="ex-statement">"The Amazon rainforest is the sole producer of oxygen on Earth."</span>
+        </div>
+      </div>
+      <div class="ex-answer-bar" onclick="revealAnswer(this)">
+        <span class="ex-verdict v-false">FALSE</span>
+        <span class="ex-explanation">The passage says the Amazon produces <em>about 20%</em> of oxygen — meaning 80% comes from elsewhere. "Sole producer" directly contradicts this.</span>
+        <span class="ex-reveal-hint">Reveal answer <span class="reveal-arrow">▸</span></span>
+      </div>
+    </div>
+
+    <!-- Example 3: FALSE -->
+    <div class="example-card">
+      <div class="example-body">
+        <div class="ex-label">Passage</div>
+        <p class="ex-passage">"Children who read regularly tend to perform better in school."</p>
+        <div class="ex-statement-row">
+          <span class="ex-stmt-label">Statement</span>
+          <span class="ex-statement">"Reading regularly has no impact on children's academic performance."</span>
+        </div>
+      </div>
+      <div class="ex-answer-bar" onclick="revealAnswer(this)">
+        <span class="ex-verdict v-false">FALSE</span>
+        <span class="ex-explanation">The passage states that regular reading leads to <em>better</em> school performance. The statement claims it has "no impact" — a direct contradiction.</span>
+        <span class="ex-reveal-hint">Reveal answer <span class="reveal-arrow">▸</span></span>
+      </div>
+    </div>
+
+    <!-- Example 4: TRUE -->
+    <div class="example-card">
+      <div class="example-body">
+        <div class="ex-label">Passage</div>
+        <p class="ex-passage">"Scientists discovered that the ancient settlement was abandoned due to a severe drought."</p>
+        <div class="ex-statement-row">
+          <span class="ex-stmt-label">Statement</span>
+          <span class="ex-statement">"A lack of water caused the inhabitants to leave their settlement."</span>
+        </div>
+      </div>
+      <div class="ex-answer-bar" onclick="revealAnswer(this)">
+        <span class="ex-verdict v-true">TRUE</span>
+        <span class="ex-explanation">"Severe drought" = a lack of water. "Abandoned" = left. "Ancient settlement" = settlement. The statement is a paraphrase of the passage — all key details match.</span>
+        <span class="ex-reveal-hint">Reveal answer <span class="reveal-arrow">▸</span></span>
+      </div>
+    </div>
+
+    <!-- Example 5: NOT GIVEN -->
+    <div class="example-card">
+      <div class="example-body">
+        <div class="ex-label">Passage</div>
+        <p class="ex-passage">"The blue whale is the largest animal ever known to have existed on Earth. It can reach lengths of up to 30 metres and weigh as much as 200 tonnes. Despite its enormous size, it feeds almost exclusively on tiny shrimp-like creatures called krill."</p>
+        <div class="ex-statement-row">
+          <span class="ex-stmt-label">Statement</span>
+          <span class="ex-statement">"The blue whale is the heaviest creature currently living in the ocean."</span>
+        </div>
+      </div>
+      <div class="ex-answer-bar" onclick="revealAnswer(this)">
+        <span class="ex-verdict v-ng">NOT GIVEN</span>
+        <span class="ex-explanation">The passage tells us the blue whale is the largest animal <em>ever</em> — but it doesn't compare it to other <em>currently living</em> ocean creatures specifically regarding weight. We cannot confirm or deny the statement from the passage alone.</span>
+        <span class="ex-reveal-hint">Reveal answer <span class="reveal-arrow">▸</span></span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="lesson-cta">
+      <button class="btn-start-test" onclick="goToTest()">Go to Practice Test →</button>
+      <div class="cta-sub">You'll have 20 minutes · 13 questions</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE 2: TEST
+════════════════════════════════════════ -->
+<div class="page" id="page-test">
+  <div class="container">
+
+    <!-- Passage -->
+    <div class="passage-pane">
+      <div class="passage-label">Reading Passage 1</div>
+      <h1 class="passage-title">Why we need to protect polar bears</h1>
+      <div class="passage-body">
+        <p>Polar bears are being increasingly threatened by the effects of climate change, but their disappearance could have far-reaching consequences. They are uniquely adapted to the extreme conditions of the Arctic Circle, where temperatures can reach -40°C. One reason for this is that they have up to 11 centimetres of fat underneath their skin. Humans with comparative levels of adipose tissue would be considered obese and would be likely to suffer from diabetes and heart disease. Yet the polar bear experiences no such consequences.</p>
+        <p>A 2014 study by Shi Ping Liu and colleagues sheds light on this mystery. They compared the genetic structure of polar bears with that of their closest relatives from a warmer climate, the brown bears. This allowed them to determine the genes that have allowed polar bears to survive in one of the toughest environments on Earth. Liu and his colleagues found the polar bears had a gene known as APoB, which reduces levels of low-density lipoproteins (LDLs) — a form of 'bad' cholesterol. In humans, mutations of this gene are associated with increased risk of heart disease. Polar bears may therefore be an important study model to understand heart disease in humans.</p>
+        <p>The genome of the polar bear may also provide the solution for another condition, one that particularly affects our older generation: osteoporosis. This is a disease where bones show reduced density, usually caused by insufficient exercise, reduced calcium intake or food starvation. Bone tissue is constantly being remodelled, meaning that bone is added or removed, depending on nutrient availability and the stress that the bone is under.</p>
+        <p>Female polar bears, however, undergo extreme conditions during every pregnancy. Once autumn comes around, these females will dig maternity dens in the snow and will remain there throughout the winter, both before and after the birth of their cubs. This process results in about six months of fasting, where the female bears have to keep themselves and their cubs alive, depleting their own calcium and calorie reserves. Despite this, their bones remain strong and dense.</p>
+        <p>Physiologists Alanda Lennox and Allen Goodship found an explanation for this paradox in 2008. They discovered that pregnant bears were able to increase the density of their bones before they started to build their dens. In addition, six months later, when they finally emerged from the den with their cubs, there was no evidence of significant loss of bone density. Hibernating brown bears do not have this capacity and must therefore resort to major bone reformation in the following spring. If the mechanism of bone remodelling in polar bears can be understood, many bedridden humans, and even astronauts, could potentially benefit.</p>
+        <p>The medical benefits of the polar bear for humanity certainly have their importance in our conservation efforts, but these should not be the only factors taken into consideration. We tend to want to protect animals we think are intelligent and possess emotions, such as elephants and primates. Bears, on the other hand, seem to be perceived as stupid and in many cases violent. And yet anecdotal evidence from the field challenges those assumptions, suggesting for example that polar bears have good problem-solving abilities.</p>
+        <p>A male bear called GoGo in Tennoji Zoo, Osaka, has even been observed making use of a tool to manipulate his environment. The bear used a tree branch on multiple occasions to dislodge a piece of meat hung out of his reach. Problem-solving ability has also been witnessed in wild polar bears, although not as obviously as with GoGo. A calculated move by a male bear involved running and jumping onto barrels in an attempt to get to a photographer standing on a platform four metres high.</p>
+        <p>In other studies, such as one by Alison Ames in 2008, polar bears showed deliberate and focussed manipulation. For example, Ames observed bears putting objects in piles and then knocking them over in what appeared to be a game. The study demonstrates that bears are capable of agile and thought-out behaviours. These examples suggest bears have greater creativity and problem-solving abilities than previously thought.</p>
+        <p>As for emotions, while the evidence is once again anecdotal, many bears have been seen to hit out at ice and snow — seemingly out of frustration — when they have just missed out on a kill. Moreover, polar bears can form unusual relationships with other species, including playing with the dogs used to pull sleds in the Arctic. Remarkably, one hand-raised polar bear called Agee has formed a close relationship with her owner Mark Dumas to the point where they even swim together. This is even more astonishing since polar bears are known to actively hunt humans in the wild.</p>
+        <p>If climate change were to lead to their extinction, this would mean not only the loss of potential breakthroughs in human medicine, but more importantly, the disappearance of an intelligent, majestic animal.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Questions -->
+    <div class="questions-pane">
+      <div class="progress-bar" id="progressBar"></div>
+
+      <div class="section-header">
+        <div class="section-tag">Questions 1–7</div>
+        <div class="section-title">True / False / Not Given</div>
+        <div class="section-instructions">
+          Do the following statements agree with the information given in Reading Passage 1?<br>
+          Write <strong>TRUE</strong> if the statement agrees · <strong>FALSE</strong> if it contradicts · <strong>NOT GIVEN</strong> if there is no information on this.
+        </div>
+      </div>
+
+      <div id="tfngQuestions"></div>
+
+      <!-- Section 2: Fill-in -->
+      <div class="fill-section">
+        <div class="section-header">
+          <div class="section-tag">Questions 8–13</div>
+          <div class="section-title">Note Completion</div>
+          <div class="section-instructions">
+            Complete the notes using <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.
+          </div>
+        </div>
+
+        <div style="background: var(--paper-warm); border-radius: 4px; padding: 1.25rem; font-size: 0.85rem; line-height: 1.8;">
+          <strong style="font-family: 'Libre Baskerville', serif;">Reasons why polar bears should be protected</strong>
+          <div style="margin-top: 0.75rem; color: var(--ink-muted); font-size: 0.78rem; margin-bottom: 1rem;">People think of bears as unintelligent and</div>
+          <div class="fill-question">
+            <div class="fill-row">
+              <span class="q-number">8.</span>
+              <input class="fill-input" data-q="8" type="text" placeholder="your answer" maxlength="40">
+              <span style="font-size:0.8rem; color:var(--ink-muted)">However, this may not be correct. For example:</span>
+            </div>
+          </div>
+          <div style="padding-left: 1rem; border-left: 2px solid var(--paper-rule); margin: 0.5rem 0 0.75rem;">
+            <div class="fill-question">
+              <div class="fill-row" style="flex-wrap: wrap;">
+                <span class="q-number">9.</span>
+                <span style="font-size:0.82rem;">In Tennoji Zoo, a bear used a branch as a</span>
+                <input class="fill-input" data-q="9" type="text" placeholder="your answer" maxlength="40">
+              </div>
+            </div>
+            <div class="fill-question" style="margin-top: 0.6rem;">
+              <div class="fill-row" style="flex-wrap: wrap;">
+                <span style="font-size:0.82rem; color:var(--ink-muted)">This allowed him to knock down some</span>
+                <input class="fill-input" data-q="10" type="text" placeholder="your answer" maxlength="40">
+                <span class="q-number" style="margin-left:0;">10.</span>
+              </div>
+            </div>
+            <div class="fill-question" style="margin-top: 0.6rem;">
+              <div class="fill-row" style="flex-wrap: wrap;">
+                <span style="font-size:0.82rem; color:var(--ink-muted)">A wild polar bear worked out a method of reaching a platform where a</span>
+                <input class="fill-input" data-q="11" type="text" placeholder="your answer" maxlength="40">
+                <span class="q-number">11.</span>
+                <span style="font-size:0.82rem; color:var(--ink-muted)">was located.</span>
+              </div>
+            </div>
+            <div class="fill-question" style="margin-top: 0.6rem;">
+              <div class="fill-row" style="flex-wrap: wrap;">
+                <span style="font-size:0.82rem; color:var(--ink-muted)">Polar bears displayed behaviour such as conscious manipulation of objects and activity similar to a</span>
+                <input class="fill-input" data-q="12" type="text" placeholder="your answer" maxlength="40">
+                <span class="q-number">12.</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 0.75rem; color: var(--ink-muted); font-size: 0.78rem; margin-bottom: 0.5rem;">Bears may also display emotions. For example:</div>
+          <div class="fill-question">
+            <div class="fill-row" style="flex-wrap: wrap;">
+              <span style="font-size:0.82rem; color:var(--ink-muted)">They may make movements suggesting</span>
+              <input class="fill-input" data-q="13" type="text" placeholder="your answer" maxlength="40">
+              <span class="q-number">13.</span>
+              <span style="font-size:0.82rem; color:var(--ink-muted)">when hunting.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-zone">
+        <button class="btn-submit" id="submitBtn" onclick="submitAnswers()" disabled>Submit Answers</button>
+        <div class="status-msg" id="statusMsg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SHEET_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+
+const TFNG_QUESTIONS = [
+  { n: 1, text: "Polar bears suffer from various health problems due to the build-up of fat under their skin." },
+  { n: 2, text: "The study done by Liu and his colleagues compared different groups of polar bears." },
+  { n: 3, text: "Liu and colleagues were the first researchers to compare polar bears and brown bears genetically." },
+  { n: 4, text: "Polar bears are able to control their levels of 'bad' cholesterol by genetic means." },
+  { n: 5, text: "Female polar bears are able to survive for about six months without food." },
+  { n: 6, text: "It was found that the bones of female polar bears were very weak when they came out of their dens in spring." },
+  { n: 7, text: "The polar bear's mechanism for increasing bone density could also be used by people one day." }
+];
+
+let studentName = "";
+let answers = {};
+let startTime = null;
+let timerInterval = null;
+let testStarted = false;
+const TIME_LIMIT = 20 * 60;
+
+// ── Page navigation ──────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'test') {
+    document.getElementById('timerDisplay').classList.remove('hidden');
+  } else {
+    document.getElementById('timerDisplay').classList.add('hidden');
+  }
+}
+
+function goToTest() {
+  if (!testStarted) {
+    document.getElementById('nameModal').style.display = 'flex';
+  } else {
+    showPage('test');
+  }
+}
+
+// ── Build questions ──────────────────────────────────────────────
+function buildTFNG() {
+  const container = document.getElementById("tfngQuestions");
+  TFNG_QUESTIONS.forEach(q => {
+    const div = document.createElement("div");
+    div.className = "tfng-question";
+    div.innerHTML = `
+      <div class="q-row">
+        <span class="q-number">${q.n}.</span>
+        <span class="q-text">${q.text}</span>
+      </div>
+      <div class="tfng-buttons">
+        <button class="btn-choice" data-q="${q.n}" data-val="TRUE" onclick="selectTFNG(this)">TRUE</button>
+        <button class="btn-choice" data-q="${q.n}" data-val="FALSE" onclick="selectTFNG(this)">FALSE</button>
+        <button class="btn-choice" data-q="${q.n}" data-val="NOT GIVEN" onclick="selectTFNG(this)">NOT GIVEN</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function buildDots() {
+  const bar = document.getElementById("progressBar");
+  for (let i = 1; i <= 13; i++) {
+    const dot = document.createElement("div");
+    dot.className = "prog-dot";
+    dot.id = `dot-${i}`;
+    bar.appendChild(dot);
+  }
+}
+
+function updateDot(q) {
+  const dot = document.getElementById(`dot-${q}`);
+  if (dot && answers[q] !== undefined && answers[q] !== "") dot.classList.add("answered");
+  checkAllAnswered();
+}
+
+function checkAllAnswered() {
+  const allDone = [1,2,3,4,5,6,7,8,9,10,11,12,13].every(q => answers[q] !== undefined && answers[q] !== "");
+  document.getElementById("submitBtn").disabled = !allDone;
+}
+
+// ── Interactions ─────────────────────────────────────────────────
+function selectTFNG(btn) {
+  const q = btn.dataset.q;
+  document.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  answers[q] = btn.dataset.val;
+  updateDot(q);
+  autoSave();
+}
+
+document.querySelectorAll(".fill-input").forEach(input => {
+  input.addEventListener("input", () => {
+    answers[input.dataset.q] = input.value.trim();
+    updateDot(input.dataset.q);
+    autoSave();
+  });
+});
+
+// ── Lesson: reveal answers ────────────────────────────────────────
+function revealAnswer(bar) {
+  if (bar.classList.contains('revealed')) return;
+  bar.classList.add('revealed');
+}
+
+// ── Timer ────────────────────────────────────────────────────────
+function startTimer() {
+  startTime = Date.now();
+  timerInterval = setInterval(() => {
+    const remaining = TIME_LIMIT - Math.floor((Date.now() - startTime) / 1000);
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById("timerDisplay").textContent = "00:00";
+      submitAnswers(true);
+      return;
+    }
+    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+    const s = String(remaining % 60).padStart(2, "0");
+    const el = document.getElementById("timerDisplay");
+    el.textContent = `${m}:${s}`;
+    if (remaining <= 120) el.classList.add("urgent");
+  }, 1000);
+}
+
+// ── Start test ───────────────────────────────────────────────────
+function startTest() {
+  const input = document.getElementById("studentName");
+  const name = input.value.trim();
+  if (!name) { input.focus(); input.style.borderColor = "#cc4444"; return; }
+  studentName = name;
+  testStarted = true;
+  document.getElementById("nameModal").style.display = "none";
+  showPage('test');
+  startTimer();
+  sendToSheet({ event: "started", name: studentName, time: new Date().toISOString() });
+}
+
+// ── Auto-save ────────────────────────────────────────────────────
+let saveTimeout = null;
+function autoSave() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    sendToSheet({
+      event: "progress", name: studentName, time: new Date().toISOString(),
+      elapsed_seconds: startTime ? Math.floor((Date.now() - startTime) / 1000) : 0,
+      answers: JSON.stringify(answers)
+    });
+  }, 1200);
+}
+
+// ── Submit ───────────────────────────────────────────────────────
+function submitAnswers(autoSubmit = false) {
+  clearInterval(timerInterval);
+  const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+  const m = Math.floor(elapsed / 60), s = elapsed % 60;
+  const btn = document.getElementById("submitBtn");
+  const msg = document.getElementById("statusMsg");
+  btn.disabled = true; btn.textContent = "Submitting…";
+  sendToSheet({
+    event: autoSubmit ? "auto_submitted" : "submitted",
+    name: studentName, time: new Date().toISOString(),
+    elapsed_seconds: elapsed, time_taken: `${m}m ${s}s`,
+    answers: JSON.stringify(answers),
+    q1:answers[1]||"",q2:answers[2]||"",q3:answers[3]||"",q4:answers[4]||"",
+    q5:answers[5]||"",q6:answers[6]||"",q7:answers[7]||"",q8:answers[8]||"",
+    q9:answers[9]||"",q10:answers[10]||"",q11:answers[11]||"",q12:answers[12]||"",q13:answers[13]||""
+  }).then(ok => {
+    if (ok) { btn.textContent = "Submitted ✓"; msg.textContent = `Answers recorded. Time taken: ${m}m ${s}s.`; msg.className = "status-msg ok"; }
+    else { btn.disabled = false; btn.textContent = "Submit Answers"; msg.textContent = "Could not save. Check your connection and try again."; msg.className = "status-msg err"; }
+  });
+}
+
+function sendToSheet(data) {
+  if (SHEET_URL === "YOUR_APPS_SCRIPT_URL_HERE") { console.log("📋 [Demo]", data); return Promise.resolve(true); }
+  return fetch(`${SHEET_URL}?${new URLSearchParams(data).toString()}`, { method: "GET", mode: "no-cors" })
+    .then(() => true).catch(() => false);
+}
+
+buildDots();
+buildTFNG();
+</script>
+</body>
+</html>
